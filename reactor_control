@@ -1,5 +1,5 @@
 --  BigReactor Control
---  by jaranvil aka jared314
+--  by jaranvil aka jared314 Fixed by Crazymarf
 --
 --  feel free to use and/or modify this code
 --
@@ -12,11 +12,16 @@
 --    - New loading and setup search with automated peripheral search 
 --    - Changes to the update methods
 --    - Except new updates soon
-
+--
+--  Version 2.4 - Jan 7 2021
+--    - Fixed the procentage being wrong
+--      As the buffer of Extreme reactors 2
+--      is bigger.
+--    - Renamed RF(/T) to FE(/T)
 
 -----------------------------------------------
 
-local version = 2.3
+local version = 2.4
 --is auto power enabled 
 local auto_string = false 
 --auto on value
@@ -189,7 +194,7 @@ function homepage()
     menu_bar()
     terminal_screen()
 
-    energy_stored = reactor.getEnergyStored()
+    energy_stored = math.floor(reactor.getEnergyStored())
     
     --------POWER STAT--------------
     draw_text(2, 3, "Power:", colors.yellow, colors.black)
@@ -273,9 +278,9 @@ function homepage()
 
     else
 
-      draw_text(2, 14, "RF/tick:", colors.yellow, colors.black)
+      draw_text(2, 14, "FE/tick:", colors.yellow, colors.black)
       rft = math.floor(reactor.getEnergyProducedLastTick())
-      draw_text(13, 14, rft.." RF/T", colors.white, colors.black)
+      draw_text(13, 14, rft.." FE/T", colors.white, colors.black)
 
     end
 
@@ -290,9 +295,9 @@ function homepage()
 
     else
 
-      draw_text(2, 15, "RF Stored:", colors.yellow, colors.black)
-      energy_stored_percent = math.floor((energy_stored/10000000)*100)
-      draw_text(13, 15, energy_stored_percent.."% ("..energy_stored.." RF)", colors.white, colors.black)
+      draw_text(2, 15, "FE Stored:", colors.yellow, colors.black)
+      energy_stored_percent = math.floor((energy_stored/1350000)*100)
+      draw_text(13, 15, energy_stored_percent.."% ("..energy_stored.." FE)", colors.white, colors.black)
 
 
     end
@@ -338,14 +343,14 @@ function homepage()
       if auto then
         if active then
           draw_text(2, 17, "Auto off:", colors.yellow, colors.black)
-          draw_text(13, 17, off.."% RF Stored", colors.white, colors.black)
+          draw_text(13, 17, off.."% RE Stored", colors.white, colors.black)
           if energy_stored_percent >= off then
             reactor.setActive(false)
             call_homepage()
           end
         else
           draw_text(2, 17, "Auto on:", colors.yellow, colors.black)
-          draw_text(13, 17, on.."% RF Stored", colors.white, colors.black)
+          draw_text(13, 17, on.."% RE Stored", colors.white, colors.black)
           if energy_stored_percent <= on then
             reactor.setActive(true)
             call_homepage()
@@ -375,12 +380,12 @@ function auto_off()
     
     draw_text(5, 7, "ON when storage =", colors.gray, colors.white)
     draw_text(5, 8, " - ", colors.white, colors.black)
-    draw_text(13, 8, on.."% RF", colors.black, colors.white)
+    draw_text(13, 8, on.."% RE", colors.black, colors.white)
     draw_text(22, 8, " + ", colors.white, colors.black)
 
     draw_text(5, 10, "OFF when storage =", colors.gray, colors.white)
     draw_text(5, 11, " - ", colors.white, colors.black)
-    draw_text(13, 11, off.."% RF", colors.black, colors.white)
+    draw_text(13, 11, off.."% FE", colors.black, colors.white)
     draw_text(22, 11, " + ", colors.white, colors.black)
 
     draw_text(11, 13, " Save ", colors.white, colors.black)
@@ -489,7 +494,7 @@ function efficiency()
   draw_text(5, 8, "Energy per mB: ", colors.lime, colors.white)
   draw_text(5, 9, rfmb.." RF/mB", colors.black, colors.white)
 
-  draw_text(5, 11, "RF/tick:", colors.lime, colors.white)
+  draw_text(5, 11, "FE/tick:", colors.lime, colors.white)
   draw_text(5, 12, rft.." RF/T", colors.black, colors.white)
 
   draw_text(11, 14, " Okay ", colors.white, colors.black)
@@ -684,7 +689,7 @@ function control_rods()
     auto_rods_bool = auto_rods == "true"
     if auto_rods_bool then
       
-      draw_text(5, 13, "RF/t: "..auto_rf, colors.black, colors.white)
+      draw_text(5, 13, "FE/t: "..auto_rf, colors.black, colors.white)
       draw_text(18, 13, " set ", colors.white, colors.black)
     else
       draw_text(16, 11, " enable ", colors.white, colors.black)
@@ -768,8 +773,8 @@ function install_update(program, pastebin)
     draw_text(5, 8, "terminal.", colors.black, colors.white)
 
     if fs.exists("install") then fs.delete("install") end
-    shell.run("pastebin get p4zeq7Ma install")
-    shell.run("install")
+--    shell.run("pastebin get p4zeq7Ma install")
+--    shell.run("install")
 end
 
 function update()
@@ -930,7 +935,7 @@ function terminal_screen()
   draw_line_term(1, 1, 55, colors.blue)
   draw_text_term(13, 1, "BigReactor Controls", colors.white, colors.blue)
   draw_line_term(1, 19, 55, colors.blue)
-  draw_text_term(13, 19, "by jaranvil aka jared314", colors.white, colors.blue)
+  draw_text_term(13, 19, "by jaranvil. Fixed by Crazymarf", colors.white, colors.blue)
 
   draw_text_term(1, 3, "Current program:", colors.white, colors.black)
   draw_text_term(1, 4, "Reactor Control v"..version, colors.blue, colors.black)
@@ -967,7 +972,7 @@ end
   draw_text_term(10, 1, "BigReactors Controls", colors.white, colors.blue)
   
   draw_line_term(1, 19, 55, colors.blue)
-  draw_text_term(10, 19, "by jaranvil aka jared314", colors.white, colors.blue)
+  draw_text_term(10, 19, "by jaranvil. Fixed by Crazymarf", colors.white, colors.blue)
 
   draw_text_term(1, 3, "Searching for a peripherals...", colors.white, colors.black)
   sleep(1)
